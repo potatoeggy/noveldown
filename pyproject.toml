@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "noveldown"
+version = "0.1.0"
+description = ""
+authors = ["eggy <eggyrules@gmail.com>"]
+license = "LGPL-3.0-only"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.27.1"
+beautifulsoup4 = "^4.10.0"
+lxml = "^4.8.0"
+
+[tool.poetry.dev-dependencies]
+types-requests = "^2.27.11"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
