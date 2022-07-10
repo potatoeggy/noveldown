@@ -28,10 +28,12 @@ for i in _get_all_source_modules():
 def get_class_for(novel_id: str) -> type[BaseSource]:
     """
     Return a source that matches the ID.
+
+    :raises `ValueError` if no sources found matched the ID
     """
-    for c in __class_list:
-        if c.check_url(novel_id):
-            return c
+    for module in __class_list:
+        if module.id == novel_id:
+            return module
     raise ValueError("No sources found matched the ID query.")
 
 
