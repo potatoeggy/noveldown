@@ -1,9 +1,16 @@
 [tool.poetry]
 name = "noveldown"
 version = "0.1.0"
-description = ""
-authors = ["eggy <eggyrules@gmail.com>"]
+description = "Command line application and library to download webnovels"
+authors = ["Daniel Chen <danielchen04@hotmail.ca>"]
 license = "LGPL-3.0-only"
+readme = "README.md"
+repository = "https://github.com/potatoeggy/noveldown"
+documentation = "https://github.com/potatoeggy/noveldown"
+keywords = ["novel", "epub", "webnovel", "download"]
+
+[tool.poetry.scripts]
+noveldown = "noveldown.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.10"
