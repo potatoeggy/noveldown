@@ -48,3 +48,7 @@ class SourcePracticalGuideToEvil(BaseSource):
         soup = self.get_soup(url)
         body = soup.select("div.entry_content")
         return str(body)
+
+
+def get_class():
+    return SourcePracticalGuideToEvil
