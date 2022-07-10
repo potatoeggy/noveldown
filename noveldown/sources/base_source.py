@@ -49,7 +49,7 @@ class BaseSource:
     url: str = ""
     genres: list[str] = []
     description: str = ""
-    cover_url: str = ""
+    cover_url: str | None = None
     # end metadata vars
 
     _chapter_urls: list[Chapter] | list[tuple[str, list[Chapter]]] | None = None
