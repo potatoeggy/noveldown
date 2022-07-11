@@ -91,7 +91,7 @@ def create_epub(source: BaseSource, path: Path | str) -> None:
     for i in chapter_htmls:
         book.add_item(i)
 
-    book.spine = ["nav", *chapter_htmls]
+    book.spine = [*chapter_htmls]
     if source.cover_url:
         image = requests.get(source.cover_url).content
         ext = imghdr.what(io.BytesIO(image))
@@ -101,7 +101,6 @@ def create_epub(source: BaseSource, path: Path | str) -> None:
     book.toc = chapter_htmls
 
     book.add_item(epub.EpubNcx())
-    book.add_item(epub.EpubNav())
 
     dest_file = path / f"{source.title}.epub"
     epub.write_epub(str(dest_file), book, {})

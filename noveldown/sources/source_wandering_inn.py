@@ -46,7 +46,7 @@ class SourceWanderingInn(BaseSource):
                 break
             cleaned.append(str(tag))
 
-        return f"<h1>{chapter.title}</h1>" + "\n".join(cleaned)
+        return f"<h2>{chapter.title}</h2>" + "\n".join(cleaned)
 
 
 def get_class() -> type[BaseSource]:

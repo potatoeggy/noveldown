@@ -45,7 +45,6 @@ def download_progress(
 
     # populate chapters
     for chapter in novel.chapters:
-        print(chapter)
         if isinstance(chapter, Chapter):
             if chapter.content:  # populate
                 pass
