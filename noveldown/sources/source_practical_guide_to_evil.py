@@ -36,7 +36,10 @@ class SourcePracticalGuideToEvil(BaseSource):
             structure.append(
                 (
                     f"Book {i}",
-                    [Chapter(self, a.text, a["href"]) for a in ele.select("li > a")],
+                    [
+                        Chapter(self, a.text, a["href"])
+                        for a in ele.select("li > a:not(.share-icon)")
+                    ],
                 )
             )
         return structure
