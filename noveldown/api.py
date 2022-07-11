@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Iterable
 
 from . import sources
 from .sources.base_source import BaseSource, Chapter
@@ -26,7 +27,7 @@ def download_progress(
     path: Path | str = ".",
     start: int | None = None,
     end: int | None = None,
-) -> None:
+) -> Iterable[str]:
     """
     Download a novel given an ID or source.
 
@@ -56,7 +57,7 @@ def download_progress(
             if actual_chap.content:
                 pass
 
-    create_epub(novel, path)
+    yield from create_epub(novel, path)
 
 
 def download(
@@ -71,6 +72,5 @@ def download(
     :param `start`: the zero-indexed first chapter to download.
     :param `end`: the zero-indexed chapter to stop at (exclusive)
     """
-    # for _ in download_progress(novel, path):
-    #    pass
-    return download_progress(novel, path, start, end)
+    for _ in download_progress(novel, path, start, end):
+        pass

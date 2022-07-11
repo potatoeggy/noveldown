@@ -11,10 +11,19 @@ app = typer.Typer()
 
 
 @app.command()
-def download(novel_id: str, path: Path = Path(".")) -> None:
+def get(novel_id: str, path: Path = Path(".")) -> None:
     """
     Download a novel.
     """
+    typer.echo(f"Searching for {novel_id}...")
+    try:
+        novel = api.query(novel_id)
+    except ValueError as err:
+        typer.secho("Invalid ID.", fg=typer.colors.RED)
+        raise typer.Exit(1) from err
+
+    typer.secho("Found novel:", fg=typer.colors.GREEN)
+    typer.echo(novel)
 
 
 @app.callback(invoke_without_command=True, no_args_is_help=True)

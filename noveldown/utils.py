@@ -1,6 +1,7 @@
 import imghdr
 import io
 from pathlib import Path
+from typing import Iterable
 
 import requests
 from ebooklib import epub
@@ -37,7 +38,7 @@ padding:0px;
 """
 
 
-def create_epub(source: BaseSource, path: Path | str) -> None:
+def create_epub(source: BaseSource, path: Path | str) -> Iterable[str]:
     path = Path(path)
 
     book = epub.EpubBook()
@@ -73,6 +74,7 @@ def create_epub(source: BaseSource, path: Path | str) -> None:
             )
             draft.add_item(style)
             chapter_htmls.append(draft)
+            yield chap.title
     else:
         for i, section in enumerate(source.chapters):
             assert isinstance(section, tuple)
@@ -87,6 +89,7 @@ def create_epub(source: BaseSource, path: Path | str) -> None:
                 )
                 draft.add_item(style)
                 chapter_htmls.append(draft)
+                yield chap.title
 
     for i in chapter_htmls:
         book.add_item(i)
