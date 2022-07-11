@@ -11,7 +11,12 @@ app = typer.Typer()
 
 
 @app.command()
-def get(novel_id: str, path: Path = Path(".")) -> None:
+def get(
+    novel_id: str,
+    path: Path = Path("."),
+    start: int | None = None,
+    end: int | None = None,
+) -> None:
     """
     Download a novel.
     """
@@ -22,8 +27,24 @@ def get(novel_id: str, path: Path = Path(".")) -> None:
         typer.secho("Invalid ID.", fg=typer.colors.RED)
         raise typer.Exit(1) from err
 
-    typer.secho("Found novel:", fg=typer.colors.GREEN)
+    typer.secho("Found novel:", fg=typer.colors.BRIGHT_GREEN)
     typer.echo(novel)
+
+    start = start or 0
+    end = end or len(novel.chapters)
+    typer.secho("Downloading...", fg=typer.colors.BRIGHT_GREEN)
+    with typer.progressbar(
+        api.download_progress(novel, path, start=start, end=end),
+        length=end - start,
+        show_eta=True,
+    ) as progress:
+        for title in progress:
+            progress.label = title
+
+    typer.secho(
+        f"Successfully downloaded {novel.title} to {path / novel.title}.epub.",
+        fg=typer.colors.BRIGHT_GREEN,
+    )
 
 
 @app.callback(invoke_without_command=True, no_args_is_help=True)

@@ -44,19 +44,6 @@ def download_progress(
     # TODO: super hacky please remove mandown influences
     novel._chapter_urls = novel._chapter_urls[start:end]
 
-    # populate chapters
-    for chapter in novel.chapters:
-        if isinstance(chapter, Chapter):
-            if chapter.content:  # populate
-                pass
-            continue
-
-        # if chapter is a tuple[str, list[Chapter]]
-        _, sublist = chapter
-        for actual_chap in sublist:
-            if actual_chap.content:
-                pass
-
     yield from create_epub(novel, path)
 
 
