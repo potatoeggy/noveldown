@@ -40,13 +40,13 @@ class SourceWanderingInn(BaseSource):
     def parse_chapter(self, chapter: Chapter) -> str:
         soup = self.get_soup(chapter.url)
         body = soup.select_one("div.entry-content")
-        cleaned = []
+        cleaned = [f"<h2>{chapter.title}</h2>"]
         for tag in body.children:
             if tag.name == "hr":
                 break
             cleaned.append(str(tag))
 
-        return f"<h2>{chapter.title}</h2>" + "\n".join(cleaned)
+        return "\n".join(cleaned)
 
 
 def get_class() -> type[BaseSource]:
