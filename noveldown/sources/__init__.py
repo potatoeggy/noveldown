@@ -27,12 +27,15 @@ for i in _get_all_source_modules():
 
 def get_class_for(novel_id: str) -> type[BaseSource]:
     """
-    Return a source that matches the ID.
+    Return a source that matches the novel ID
+    by matching ID or aliases, case insensitively.
 
     :raises `ValueError` if no sources found matched the ID
     """
     for module in __class_list:
-        if module.id == novel_id:
+        if module.id.lower() == novel_id.lower() or novel_id.lower() in [
+            alias.lower() for alias in module.aliases
+        ]:
             return module
     raise ValueError("No sources found matched the ID query.")
 

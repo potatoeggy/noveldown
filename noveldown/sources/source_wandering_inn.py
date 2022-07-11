@@ -18,6 +18,7 @@ TOC_URL = "https://wanderinginn.com/table-of-contents/"
 
 class SourceWanderingInn(BaseSource):
     id = "WanderingInn"
+    aliases = ["TheWanderingInn"]
     title = "The Wandering Inn"
     authors = ["pirate aba"]
     url = "https://wanderinginn.com"

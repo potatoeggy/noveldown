@@ -12,6 +12,7 @@ TOC_URL = "https://practicalguidetoevil.wordpress.com/table-of-contents"
 
 class SourcePracticalGuideToEvil(BaseSource):
     id = "PracticalGuideToEvil"
+    aliases = ["APracticalGuideToEvil", "PGtE"]
     title = "A Practical Guide to Evil"
     authors = ["ErraticErrata"]
     url = "https://practicalguidetoevil.wordpress.com"

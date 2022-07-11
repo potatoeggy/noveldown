@@ -49,6 +49,7 @@ class BaseSource:
 
     # begin metadata vars (override them)
     id: str = "0"
+    aliases: list[str] = []
     title: str = ""
     authors: list[str] = []
     url: str = ""
