@@ -12,6 +12,8 @@ Webnovel downloader and converter to EPUB (with metadata!) as a Python library a
 
 ## Supported stories
 
+To request a new story, please file a [new issue](https://github.com/potatoeggy/noveldown/issues/new).
+
 - The Wandering Inn - pirate aba (https://wanderinginn.com)
 - A Practical Guide to Evil - ErraticErrata (https://practicalguidetoevil.wordpress.com)
 
