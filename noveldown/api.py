@@ -41,7 +41,6 @@ def download_progress(
     if isinstance(novel, str):
         novel = query(novel)
 
-    # TODO: super hacky please remove mandown influences
     novel.set_chapter_range(start=start, end=end)
 
     yield from create_epub(novel, path)

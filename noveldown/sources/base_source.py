@@ -1,23 +1,15 @@
 import textwrap
-from dataclasses import InitVar, dataclass, field
 from functools import cached_property
-from typing import Callable
 
 import requests
 from bs4 import BeautifulSoup
 
 
-@dataclass
 class Chapter:
-    # TODO: switch to regular class
-    source: InitVar["BaseSource"]
-    title: str
-    url: str
-
-    _chapter_getter: Callable[["Chapter"], str] = field(init=False)
-
-    def __post_init__(self, source: "BaseSource") -> None:
+    def __init__(self, source: "BaseSource", title: str, url: str) -> None:
         self._chapter_getter = source.parse_chapter
+        self.title = title
+        self.url = url
 
     def __repr__(self) -> str:
         return f"Chapter(title={self.title}, url={self.url})"
