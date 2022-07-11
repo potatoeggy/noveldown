@@ -20,7 +20,7 @@ def get(
     """
     Download a novel.
     """
-    typer.echo(f"Searching for {novel_id}...")
+    typer.echo(f"Searching for '{novel_id}'...")
     try:
         novel = api.query(novel_id)
     except ValueError as err:
@@ -69,9 +69,11 @@ def callback(
         raise typer.Exit()
 
     if supported_ids:
-        typer.echo("Story title: Story ID")
+        typer.secho("Story title: Story ID", fg=typer.colors.BRIGHT_BLUE)
         for source in sources.get_all_classes():
-            typer.echo(f"{source.title}: {source.id}")
+            typer.echo(
+                f"{source.title}: {source.id} (aliases: {', '.join(source.aliases) or 'none'})"
+            )
         raise typer.Exit()
 
 
