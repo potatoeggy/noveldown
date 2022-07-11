@@ -42,7 +42,7 @@ def download_progress(
         novel = query(novel)
 
     # TODO: super hacky please remove mandown influences
-    novel._chapter_urls = novel._chapter_urls[start:end]
+    novel.set_chapter_range(start=start, end=end)
 
     yield from create_epub(novel, path)
 

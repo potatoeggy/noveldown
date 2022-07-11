@@ -1,5 +1,6 @@
 import textwrap
 from dataclasses import InitVar, dataclass, field
+from functools import cached_property
 from typing import Callable
 
 import requests
@@ -13,7 +14,7 @@ class Chapter:
     title: str
     url: str
 
-    _chapter_getter: Callable[[str], str] = field(init=False)
+    _chapter_getter: Callable[["Chapter"], str] = field(init=False)
 
     def __post_init__(self, source: "BaseSource") -> None:
         self._chapter_getter = source.parse_chapter
@@ -72,6 +73,49 @@ class BaseSource:
         if self._chapter_urls is None:
             self._chapter_urls = self.fetch_chapter_list()
         return self._chapter_urls
+
+    @cached_property
+    def chapters_flattened(self) -> list[Chapter]:
+        if self.chapters:
+            if isinstance(self.chapters[0], tuple):
+                flat_list: list[Chapter] = []
+                for section in self.chapters:
+                    assert isinstance(section, tuple)
+                    _, chapters = section
+                    for chap in chapters:
+                        flat_list.append(chap)
+
+                return flat_list
+        # TODO: really fix by at least having a default section title or something
+        return self.chapters  # type: ignore
+
+    def set_chapter_range(
+        self, *, start: int | None = None, end: int | None = None
+    ) -> None:
+        start = start or 0
+        end = end or len(self.chapters_flattened)
+        if self._chapter_urls and isinstance(self._chapter_urls[0], Chapter):
+            self._chapter_urls = self._chapter_urls[start:end]
+            return
+
+        current_num = 0
+        new_temp = []
+        for section in self._chapter_urls:
+            assert isinstance(section, tuple)
+            sec_title, chapters = section
+            for chap in chapters:
+                if start <= current_num < end:
+                    new_temp.append((sec_title, chap))
+                current_num += 1
+
+        new_chapter_urls: list[tuple[str, list[Chapter]]] = []
+        last_sec_title = "SENTINEL_IGNORE_EGG_NOVELDOWN"
+        for sec_title, chap in new_temp:
+            if last_sec_title != sec_title:
+                new_chapter_urls.append((sec_title, []))
+            last_sec_title = sec_title
+            new_chapter_urls[-1][1].append(chap)
+        self._chapter_urls = new_chapter_urls
 
     def get_soup(self, url: str) -> BeautifulSoup:
         return BeautifulSoup(requests.get(url).text, "lxml")

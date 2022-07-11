@@ -62,6 +62,7 @@ def create_epub(source: BaseSource, path: Path | str) -> Iterable[str]:
     book.add_item(style)
 
     chapter_htmls: list[epub.EpubHtml] = []
+
     # assume there is at least one chapter
     if isinstance(source.chapters[0], Chapter):
         for i, chap in enumerate(source.chapters):
@@ -76,10 +77,14 @@ def create_epub(source: BaseSource, path: Path | str) -> Iterable[str]:
             draft.add_item(style)
             chapter_htmls.append(draft)
             yield chap.title
+        book.toc = [*chapter_htmls]
     else:
+        book.toc = []
         for i, section in enumerate(source.chapters):
             assert isinstance(section, tuple)
-            _, chapters = section
+            sec_title, chapters = section
+            book.toc.append((epub.Section(sec_title), []))
+
             for j, chap in enumerate(chapters):
                 assert isinstance(chap, Chapter)
                 draft = epub.EpubHtml(
@@ -90,7 +95,8 @@ def create_epub(source: BaseSource, path: Path | str) -> Iterable[str]:
                 )
                 draft.add_item(style)
                 chapter_htmls.append(draft)
-                yield chap.title
+                book.toc[i][1].append(draft)
+                yield f"{sec_title} - {chap.title}"
 
     for i in chapter_htmls:
         book.add_item(i)
@@ -101,8 +107,6 @@ def create_epub(source: BaseSource, path: Path | str) -> Iterable[str]:
         ext = imghdr.what(io.BytesIO(image))
         book.set_cover(f"cover.{ext}", image)
         book.spine.insert(0, "cover")
-
-    book.toc = chapter_htmls
 
     book.add_item(epub.EpubNcx())
 

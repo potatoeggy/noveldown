@@ -31,7 +31,7 @@ def get(
     typer.echo(novel)
 
     start = start or 0
-    end = end or len(novel.chapters)
+    end = end or len(novel.chapters_flattened)
     typer.secho("Downloading...", fg=typer.colors.BRIGHT_GREEN)
     with typer.progressbar(
         api.download_progress(novel, path, start=start, end=end),

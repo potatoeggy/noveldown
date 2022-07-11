@@ -29,26 +29,29 @@ class SourcePracticalGuideToEvil(BaseSource):
 
     def fetch_chapter_list(self) -> list[tuple[str, list[Chapter]]]:
         soup = self.get_soup(TOC_URL)
-        toc_html = soup.select("div.entry-content")
+        toc_html = soup.select_one("div.entry-content")
 
         structure: list[tuple[str, list[Chapter]]] = []
-        active_chapter = ""
-        for ele in toc_html:
-            if ele.name == "h2":
-                active_chapter = ele.text
-            elif ele.name == "ul":
-                structure.append(
-                    (
-                        active_chapter,
-                        [Chapter(self, a.text, a["href"]) for a in ele],
-                    )
+        for i, ele in enumerate(toc_html.select("div > ul"), start=1):
+            print(ele)
+            structure.append(
+                (
+                    f"Book {i}",
+                    [Chapter(self, a.text, a["href"]) for a in ele.select("li > a")],
                 )
+            )
         return structure
 
     def parse_chapter(self, chapter: Chapter) -> str:
         soup = self.get_soup(chapter.url)
-        body = soup.select_one("div.entry_content")
-        return str(body)
+        body = soup.select_one("div.entry-content")
+        cleaned = [f"<h2>{chapter.title}</h2>"]
+        for tag in body.children:
+            if tag.name == "div":
+                break
+            cleaned.append(str(tag))
+
+        return "\n".join(cleaned)
 
 
 def get_class() -> type[BaseSource]:
