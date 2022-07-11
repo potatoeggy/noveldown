@@ -33,7 +33,6 @@ class SourcePracticalGuideToEvil(BaseSource):
 
         structure: list[tuple[str, list[Chapter]]] = []
         for i, ele in enumerate(toc_html.select("div > ul"), start=1):
-            print(ele)
             structure.append(
                 (
                     f"Book {i}",
