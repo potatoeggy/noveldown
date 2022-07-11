@@ -50,6 +50,7 @@ def create_epub(source: BaseSource, path: Path | str) -> Iterable[str]:
     book.add_metadata("DC", "description", source.description)
     book.add_metadata("DC", "contributor", "noveldown")
     book.add_metadata("DC", "source", source.url)
+    book.add_metadata("DC", "publisher", source.url)
     for genre in source.genres:
         book.add_metadata("DC", "subject", genre)
 
