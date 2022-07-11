@@ -43,5 +43,5 @@ class SourceWanderingInn(BaseSource):
         return str(body)
 
 
-def get_class():
+def get_class() -> type[BaseSource]:
     return SourceWanderingInn
