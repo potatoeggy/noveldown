@@ -1,3 +1,4 @@
+import textwrap
 from dataclasses import InitVar, dataclass, field
 from typing import Callable
 
@@ -68,6 +69,18 @@ class BaseSource:
 
     def get_text_from_url(self, url: str) -> str:
         return requests.get(url).text
+
+    def __repr__(self) -> str:
+        return textwrap.dedent(
+            f"""
+            {self.id}: {self.title} - {" ".join(self.authors)}
+            url: {self.url}
+            genres: {", ".join(self.genres)}
+            cover: {self.cover_url}
+
+            {self.description}
+            """
+        ).strip()
 
     def update_metadata(self) -> None:
         """
