@@ -4,9 +4,7 @@ from typing import Optional
 
 import typer
 
-from noveldown import sources
-
-from . import __version_str__, api
+from . import __version_str__, api, sources
 
 app = typer.Typer()
 
