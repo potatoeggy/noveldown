@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from pathlib import Path
 from typing import Optional
 
 import typer
@@ -10,8 +11,10 @@ app = typer.Typer()
 
 
 @app.command()
-def download(novel_id: str) -> None:
-    pass
+def download(novel_id: str, path: Path = Path(".")) -> None:
+    """
+    Download a novel.
+    """
 
 
 @app.callback(invoke_without_command=True, no_args_is_help=True)
@@ -30,13 +33,15 @@ def callback(
         help="Output a list of IDs supported by noveldown",
     ),
 ) -> None:
+
     if version:
         typer.echo(f"noveldown {__version_str__}")
         raise typer.Exit()
 
     if supported_ids:
+        typer.echo("Story title: Story ID")
         for source in sources.get_all_classes():
-            typer.echo(f"{source.id}: {source.title}")
+            typer.echo(f"{source.title}: {source.id}")
         raise typer.Exit()
 
 
