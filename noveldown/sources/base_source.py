@@ -131,7 +131,7 @@ class BaseSource:
             url: {self.url}
             genres: {", ".join(self.genres)}
             cover: {self.cover_url}
-            chapters: {len(self._chapter_urls or [])}
+            chapters: {len(self.chapters_flattened)}
 
             """
             )
