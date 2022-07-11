@@ -39,6 +39,7 @@ padding:0px;
 
 
 def create_epub(source: BaseSource, path: Path | str) -> Iterable[str]:
+    # TODO: split this into multiple functions (iohandler?) and add threads
     path = Path(path)
 
     book = epub.EpubBook()

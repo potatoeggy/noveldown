@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Iterable
 
 from . import sources
-from .sources.base_source import BaseSource, Chapter
+from .sources.base_source import BaseSource
 from .utils import create_epub
 
 
