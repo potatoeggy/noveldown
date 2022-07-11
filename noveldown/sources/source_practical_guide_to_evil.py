@@ -44,9 +44,9 @@ class SourcePracticalGuideToEvil(BaseSource):
                 )
         return structure
 
-    def parse_chapter(self, url: str) -> str:
-        soup = self.get_soup(url)
-        body = soup.select("div.entry_content")
+    def parse_chapter(self, chapter: Chapter) -> str:
+        soup = self.get_soup(chapter.url)
+        body = soup.select_one("div.entry_content")
         return str(body)
 
 

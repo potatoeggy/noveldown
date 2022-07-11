@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 
 @dataclass
 class Chapter:
+    # TODO: switch to regular class
     source: InitVar["BaseSource"]
     title: str
     url: str
@@ -17,9 +18,12 @@ class Chapter:
     def __post_init__(self, source: "BaseSource") -> None:
         self._chapter_getter = source.parse_chapter
 
+    def __repr__(self) -> str:
+        return f"Chapter(title={self.title}, url={self.url})"
+
     @property
     def content(self) -> str:
-        return self._chapter_getter(self.url)
+        return self._chapter_getter(self)
 
 
 class BaseSource:
@@ -40,7 +44,7 @@ class BaseSource:
 
      - `update_metadata -> None`
      - `fetch_chapter_list -> list[Chapter]`
-     - `parse_chapter(url: str) -> str`
+     - `parse_chapter(chapter: Chapter) -> str`
     """
 
     # begin metadata vars (override them)
@@ -58,6 +62,10 @@ class BaseSource:
     def __init__(self) -> None:
         self.update_metadata()
 
+        # assume populate
+        if self.chapters:
+            pass
+
     @property
     def chapters(self) -> list[Chapter] | list[tuple[str, list[Chapter]]]:
         if self._chapter_urls is None:
@@ -71,15 +79,18 @@ class BaseSource:
         return requests.get(url).text
 
     def __repr__(self) -> str:
-        return textwrap.dedent(
-            f"""
+        return (
+            textwrap.dedent(
+                f"""
             {self.id}: {self.title} - {" ".join(self.authors)}
             url: {self.url}
             genres: {", ".join(self.genres)}
             cover: {self.cover_url}
+            chapters: {len(self._chapter_urls or [])}
 
-            {self.description}
             """
+            )
+            + self.description
         ).strip()
 
     def update_metadata(self) -> None:
@@ -98,7 +109,7 @@ class BaseSource:
         """
         raise NotImplementedError
 
-    def parse_chapter(self, url: str) -> str:
+    def parse_chapter(self, chapter: Chapter) -> str:
         """
         Given a chapter URL, return clean HTML to be put
         directly into the EPUB.

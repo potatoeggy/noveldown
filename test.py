@@ -1,5 +1,6 @@
 import noveldown
 
-print(noveldown.get_available_ids())
-print(noveldown.query("TheWanderingInn"))
-noveldown.download("TheWanderingInn")
+a = noveldown.query("WanderingInn")
+b = a.chapters[0]
+print(a.chapters[3].content)
+noveldown.download(a, end=5)

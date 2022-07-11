@@ -45,14 +45,19 @@ def create_epub(source: BaseSource, path: Path | str) -> None:
     book.set_title(source.title)
     book.set_language("en")
 
-    book.add_metadata("dc", "description", source.description)
-    book.add_metadata("dc", "contributor", "noveldown")
-    book.add_metadata("dc", "source", source.url)
+    book.add_metadata("DC", "description", source.description)
+    book.add_metadata("DC", "contributor", "noveldown")
+    book.add_metadata("DC", "source", source.url)
     for genre in source.genres:
-        book.add_metadata("dc", "subject", genre)
+        book.add_metadata("DC", "subject", genre)
 
     for author in source.authors:
         book.add_author(author)
+
+    style = epub.EpubItem(
+        uid="style", file_name="style.css", media_type="text/css", content=STYLE_CSS
+    )
+    book.add_item(style)
 
     chapter_htmls: list[epub.EpubHtml] = []
     # assume there is at least one chapter
@@ -60,33 +65,31 @@ def create_epub(source: BaseSource, path: Path | str) -> None:
         for i, chap in enumerate(source.chapters):
             # get mypy to stop yelling at me even though it's slow
             assert isinstance(chap, Chapter)
-            chapter_htmls.append(
-                epub.EpubHtml(
-                    file_name=f"{i}.xhtml",
-                    title=chap.title,
-                    lang="en",
-                    content=chap.content,
-                )
+            draft = epub.EpubHtml(
+                file_name=f"{i}.xhtml",
+                title=chap.title,
+                lang="en",
+                content=chap.content,
             )
+            draft.add_item(style)
+            chapter_htmls.append(draft)
     else:
         for i, section in enumerate(source.chapters):
             assert isinstance(section, tuple)
             _, chapters = section
             for j, chap in enumerate(chapters):
                 assert isinstance(chap, Chapter)
-                chapter_htmls.append(
-                    epub.EpubHtml(
-                        file_name=f"{i}-{j}.xhtml",
-                        title=chap.title,
-                        lang="en",
-                        content=chap.content,
-                    )
+                draft = epub.EpubHtml(
+                    file_name=f"{i}-{j}.xhtml",
+                    title=chap.title,
+                    lang="en",
+                    content=chap.content,
                 )
+                draft.add_item(style)
+                chapter_htmls.append(draft)
 
-    style = epub.EpubItem(
-        uid="style", file_name="style.css", media_type="text/css", content=STYLE_CSS
-    )
-    book.add_item(style)
+    for i in chapter_htmls:
+        book.add_item(i)
 
     book.spine = ["nav", *chapter_htmls]
     if source.cover_url:
@@ -95,7 +98,10 @@ def create_epub(source: BaseSource, path: Path | str) -> None:
         book.set_cover(f"cover.{ext}", image)
         book.spine.insert(0, "cover")
 
+    book.toc = chapter_htmls
+
     book.add_item(epub.EpubNcx())
     book.add_item(epub.EpubNav())
 
-    epub.write_epub(str(path / f"{source.title}.epub"), book, {})
+    dest_file = path / f"{source.title}.epub"
+    epub.write_epub(str(dest_file), book, {})
