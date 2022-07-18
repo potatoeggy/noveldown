@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import textwrap
 from functools import cached_property
 
@@ -6,7 +8,7 @@ from bs4 import BeautifulSoup
 
 
 class Chapter:
-    def __init__(self, source: "BaseSource", title: str, url: str) -> None:
+    def __init__(self, source: BaseSource, title: str, url: str) -> None:
         self._chapter_getter = source.parse_chapter
         self.title = title
         self.url = url
@@ -78,7 +80,10 @@ class BaseSource:
                         flat_list.append(chap)
 
                 return flat_list
-        # TODO: really fix by at least having a default section title or something
+
+        # self.chapters is guaranteed to be a list, so
+        # if the first check evaluates false it must be an empty list
+        # which is the correct return type
         return self.chapters  # type: ignore
 
     def set_chapter_range(
@@ -92,7 +97,7 @@ class BaseSource:
 
         current_num = 0
         new_temp = []
-        for section in self._chapter_urls:
+        for section in self._chapter_urls or []:
             assert isinstance(section, tuple)
             sec_title, chapters = section
             for chap in chapters:

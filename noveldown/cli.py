@@ -32,7 +32,7 @@ def get(
     path: Path = Path("."),
     start: int | None = None,
     end: int | None = None,
-    version: Optional[bool] = typer.Option(
+    version: Optional[bool] = typer.Option(  # pylint: disable=unused-argument
         None,
         "--version",
         "-v",
@@ -40,7 +40,7 @@ def get(
         callback=version_callback,
         help="Display the current version of noveldown",
     ),
-    supported_ids: Optional[bool] = typer.Option(
+    supported_ids: Optional[bool] = typer.Option(  # pylint: disable=unused-argument
         None,
         "--supported-ids",
         is_eager=True,
