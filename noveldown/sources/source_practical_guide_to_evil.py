@@ -1,4 +1,4 @@
-from .base_source import BaseSource, Chapter
+from .base_source import BaseSource, Chapter, SectionedChapterList
 
 DESCRIPTION = """
 The Empire stands triumphant.
@@ -27,11 +27,11 @@ class SourcePracticalGuideToEvil(BaseSource):
     description = DESCRIPTION
     toc_url = TOC_URL
 
-    def fetch_chapter_list(self) -> list[tuple[str, list[Chapter]]]:
+    def fetch_chapter_list(self) -> SectionedChapterList:
         soup = self.get_soup(TOC_URL)
         toc_html = soup.select_one("div.entry-content")
 
-        structure: list[tuple[str, list[Chapter]]] = []
+        structure: SectionedChapterList = []
         for i, ele in enumerate(toc_html.select("div > ul"), start=1):
             structure.append(
                 (

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import textwrap
 from functools import cached_property
+from typing import cast
 
 import requests
 from bs4 import BeautifulSoup
@@ -19,6 +20,9 @@ class Chapter:
     @property
     def content(self) -> str:
         return self._chapter_getter(self)
+
+
+SectionedChapterList = list[tuple[str, list[Chapter]]]
 
 
 class BaseSource:
@@ -55,7 +59,7 @@ class BaseSource:
 
     # default section title for flattened or a or sentinel would be best
     # so that all chapter_urls are list[tuple]s
-    _chapter_urls: list[Chapter] | list[tuple[str, list[Chapter]]] | None = None
+    _chapter_urls: list[Chapter] | SectionedChapterList | None = None
 
     def __init__(self) -> None:
         self.update_metadata()
@@ -65,7 +69,7 @@ class BaseSource:
             pass
 
     @property
-    def chapters(self) -> list[Chapter] | list[tuple[str, list[Chapter]]]:
+    def chapters(self) -> list[Chapter] | SectionedChapterList:
         if self._chapter_urls is None:
             self._chapter_urls = self.fetch_chapter_list()
         return self._chapter_urls
@@ -74,9 +78,9 @@ class BaseSource:
     def chapters_flattened(self) -> list[Chapter]:
         if self.chapters:
             if isinstance(self.chapters[0], tuple):
+
                 flat_list: list[Chapter] = []
-                for section in self.chapters:
-                    assert isinstance(section, tuple)
+                for section in cast(SectionedChapterList, self.chapters):
                     _, chapters = section
                     for chap in chapters:
                         flat_list.append(chap)
@@ -99,15 +103,14 @@ class BaseSource:
 
         current_num = 0
         new_temp = []
-        for section in self._chapter_urls or []:
-            assert isinstance(section, tuple)
+        for section in cast(SectionedChapterList, self._chapter_urls) or []:
             sec_title, chapters = section
             for chap in chapters:
                 if start <= current_num < end:
                     new_temp.append((sec_title, chap))
                 current_num += 1
 
-        new_chapter_urls: list[tuple[str, list[Chapter]]] = []
+        new_chapter_urls: SectionedChapterList = []
         last_sec_title = "SENTINEL_IGNORE_EGG_NOVELDOWN"
         for sec_title, chap in new_temp:
             if last_sec_title != sec_title:
@@ -144,7 +147,7 @@ class BaseSource:
         Override if necessary.
         """
 
-    def fetch_chapter_list(self) -> list[Chapter] | list[tuple[str, list[Chapter]]]:
+    def fetch_chapter_list(self) -> list[Chapter] | SectionedChapterList:
         """
         Return a list of chapter URLs in ascending order.
 

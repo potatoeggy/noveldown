@@ -1,12 +1,12 @@
 import imghdr
 import io
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, cast
 
 import requests
 from ebooklib import epub
 
-from .sources.base_source import BaseSource, Chapter
+from .sources.base_source import BaseSource, Chapter, SectionedChapterList
 
 STYLE_CSS = """
 body { background-color: #ffffff;
@@ -68,7 +68,7 @@ def create_epub(source: BaseSource, path: Path | str) -> Iterable[str]:
     if isinstance(source.chapters[0], Chapter):
         for i, chap in enumerate(source.chapters):
             # get mypy to stop yelling at me even though it's slow
-            assert isinstance(chap, Chapter)
+            chap = cast(Chapter, chap)
             draft = epub.EpubHtml(
                 file_name=f"{i}.xhtml",
                 title=chap.title,
@@ -81,13 +81,11 @@ def create_epub(source: BaseSource, path: Path | str) -> Iterable[str]:
         book.toc = [*chapter_htmls]
     else:
         book.toc = []
-        for i, section in enumerate(source.chapters):
-            assert isinstance(section, tuple)
+        for i, section in enumerate(cast(SectionedChapterList, source.chapters)):
             sec_title, chapters = section
             book.toc.append((epub.Section(sec_title), []))
 
             for j, chap in enumerate(chapters):
-                assert isinstance(chap, Chapter)
                 draft = epub.EpubHtml(
                     file_name=f"{i}-{j}.xhtml",
                     title=chap.title,
