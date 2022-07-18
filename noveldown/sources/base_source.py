@@ -53,6 +53,8 @@ class BaseSource:
     cover_url: str | None = None
     # end metadata vars
 
+    # default section title for flattened or a or sentinel would be best
+    # so that all chapter_urls are list[tuple]s
     _chapter_urls: list[Chapter] | list[tuple[str, list[Chapter]]] | None = None
 
     def __init__(self) -> None:
