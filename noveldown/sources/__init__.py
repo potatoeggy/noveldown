@@ -5,6 +5,7 @@ from .base_source import BaseSource
 
 from . import (  # isort: skip
     source_practical_guide_to_evil,
+    source_pale,
     source_wandering_inn,
 )
 
