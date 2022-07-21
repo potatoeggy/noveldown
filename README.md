@@ -16,6 +16,7 @@ To request a new story, please file a [new issue](https://github.com/potatoeggy/
 
 - [The Wandering Inn](https://wanderinginn.com) - pirate aba
 - [A Practical Guide to Evil](https://practicalguidetoevil.wordpress.com) - ErraticErrata
+- [Pale](https://palewebserial.wordpress.com/) - Wildbow
 
 ## Installation
 
