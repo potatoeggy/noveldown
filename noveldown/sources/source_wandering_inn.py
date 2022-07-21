@@ -43,7 +43,7 @@ class SourceWanderingInn(BaseSource):
         body = soup.select_one("div.entry-content")
         cleaned = [f"<h2>{chapter.title}</h2>"]
         for tag in body.children:
-            if tag.name == "hr":
+            if tag.name == "hr" or tag.name == "div":
                 break
             cleaned.append(str(tag))
 
