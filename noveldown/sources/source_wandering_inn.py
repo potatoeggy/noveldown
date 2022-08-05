@@ -20,7 +20,7 @@ class SourceWanderingInn(BaseSource):
     id = "WanderingInn"
     aliases = ["TheWanderingInn"]
     title = "The Wandering Inn"
-    authors = ["pirate aba"]
+    authors = ["pirateaba"]
     url = "https://wanderinginn.com"
     genres = [
         "Fantasy",
