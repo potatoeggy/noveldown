@@ -49,10 +49,10 @@ pip3 install dist/noveldown*.whl
 To download the novel as an EPUB:
 
 ```
-noveldown get <ID>
+noveldown <ID>
 
 # for example:
-noveldown get WanderingInn
+noveldown WanderingInn
 ```
 
 IDs can be found through `noveldown --supported-ids`
