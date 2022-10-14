@@ -4,6 +4,7 @@ import textwrap
 from functools import cached_property
 from typing import cast
 
+import httpx
 import requests
 from bs4 import BeautifulSoup
 
@@ -13,13 +14,26 @@ class Chapter:
         self._chapter_getter = source.parse_chapter
         self.title = title
         self.url = url
+        self.content_raw: str | None = None
 
     def __repr__(self) -> str:
         return f"Chapter(title={self.title}, url={self.url})"
 
     @property
     def content(self) -> str:
-        return self._chapter_getter(self)
+        return self._chapter_getter(self, self.content_raw)
+
+    async def get_raw_content(self, client: httpx.AsyncClient) -> str:
+        """
+        Fetch the raw page HTML and save it, returning the title.
+        """
+        # i love it when i spaghetti things for the sake of perf
+        res = await client.get(self.url)
+        self.content_raw = res.text
+
+        if not res.text.strip():
+            self.content_raw = requests.get(self.url).text
+        return self.title
 
 
 SectionedChapterList = list[tuple[str, list[Chapter]]]
@@ -43,7 +57,7 @@ class BaseSource:
 
      - `update_metadata -> None`
      - `fetch_chapter_list -> list[Chapter]`
-     - `parse_chapter(chapter: Chapter) -> str`
+     - `parse_chapter(chapter: Chapter, content_raw: str | None = None) -> str`
     """
 
     # begin metadata vars (override them)
@@ -119,7 +133,11 @@ class BaseSource:
             new_chapter_urls[-1][1].append(chap)
         self._chapter_urls = new_chapter_urls
 
-    def get_soup(self, url: str) -> BeautifulSoup:
+    def get_soup(self, url: str, content_raw: str | None = None) -> BeautifulSoup:
+        if content_raw is not None:
+            if content_raw.strip():
+                # if it is an empty page we go again
+                return BeautifulSoup(content_raw, "lxml")
         return BeautifulSoup(requests.get(url).text, "lxml")
 
     def get_text_from_url(self, url: str) -> str:
@@ -156,9 +174,11 @@ class BaseSource:
         """
         raise NotImplementedError
 
-    def parse_chapter(self, chapter: Chapter) -> str:
+    def parse_chapter(self, chapter: Chapter, content_raw: str | None = None) -> str:
         """
         Given a chapter URL, return clean HTML to be put
         directly into the EPUB.
+
+        :param `content_raw`: parse an already-downloaded HTML file.
         """
         raise NotImplementedError

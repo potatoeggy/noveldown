@@ -1,8 +1,10 @@
+import asyncio
 import imghdr
 import io
 from pathlib import Path
-from typing import Iterable, cast
+from typing import AsyncIterator, Iterator, cast
 
+import httpx
 import requests
 from ebooklib import epub
 
@@ -37,8 +39,39 @@ padding:0px;
 .small { font-size: smaller; }
 """
 
+MAX_DEFAULT_THREADS = 16
 
-def create_epub(source: BaseSource, path: Path | str) -> Iterable[str]:
+
+async def magic(
+    source: BaseSource, threads: int = MAX_DEFAULT_THREADS
+) -> AsyncIterator[str]:
+    limits = httpx.Limits(
+        max_connections=threads, max_keepalive_connections=threads, keepalive_expiry=5
+    )
+    async with httpx.AsyncClient(limits=limits) as client:
+        functions = [chap.get_raw_content(client) for chap in source.chapters_flattened]
+
+        for result in asyncio.as_completed(functions):
+            yield await result
+
+
+def load_all_chapters(
+    source: BaseSource, threads: int = MAX_DEFAULT_THREADS
+) -> Iterator[str]:
+    """
+    Calls the property for each chapter to collect them all
+    in memory asynchronously to be extra fast.
+    """
+    gen = magic(source, threads)
+    loop = asyncio.get_event_loop()
+    while True:
+        try:
+            yield loop.run_until_complete(gen.__anext__())
+        except StopAsyncIteration:
+            break
+
+
+def create_epub(source: BaseSource, path: Path | str) -> Iterator[str]:
     # TODO: split this into multiple functions (iohandler?) and add threads
     path = Path(path)
 

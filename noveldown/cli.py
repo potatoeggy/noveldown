@@ -66,9 +66,20 @@ def get(
 
     start = start or 0
     end = end or len(novel.chapters_flattened)
+    novel.set_chapter_range(start=start, end=end)
+
     typer.secho("Downloading...", fg=typer.colors.BRIGHT_GREEN)
     with typer.progressbar(
-        api.download_progress(novel, path, start=start, end=end),
+        api.prefetch_book(novel),
+        length=end - start,
+        show_eta=True,
+    ) as progress:
+        for title in progress:
+            progress.label = title
+
+    typer.secho("Converting to EPUB...", fg=typer.colors.BRIGHT_GREEN)
+    with typer.progressbar(
+        api.download_progress(novel, path),
         length=end - start,
         show_eta=True,
     ) as progress:

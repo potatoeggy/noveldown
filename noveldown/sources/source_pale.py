@@ -41,8 +41,8 @@ class SourcePale(BaseSource):
         ]
         return structure
 
-    def parse_chapter(self, chapter: Chapter) -> str:
-        soup = self.get_soup(chapter.url)
+    def parse_chapter(self, chapter: Chapter, content_raw: str | None = None) -> str:
+        soup = self.get_soup(chapter.url, content_raw)
         body = soup.select_one("div.entry-content")
         cleaned = [f"<h2>{chapter.title}</h2>"]
 

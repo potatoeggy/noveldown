@@ -38,10 +38,11 @@ class SourceWanderingInn(BaseSource):
 
         return [Chapter(self, el.text, el["href"]) for el in toc_html]
 
-    def parse_chapter(self, chapter: Chapter) -> str:
-        soup = self.get_soup(chapter.url)
+    def parse_chapter(self, chapter: Chapter, content_raw: str | None = None) -> str:
+        soup = self.get_soup(chapter.url, content_raw)
         body = soup.select_one("div.entry-content")
         cleaned = [f"<h2>{chapter.title}</h2>"]
+
         for tag in body.children:
             if tag.name == "hr" or tag.name == "div":
                 break

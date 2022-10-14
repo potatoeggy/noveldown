@@ -1,9 +1,9 @@
 from pathlib import Path
-from typing import Iterable
+from typing import Iterator
 
 from . import sources
 from .sources.base_source import BaseSource
-from .utils import create_epub
+from .utils import create_epub, load_all_chapters
 
 
 def get_available_ids() -> list[str]:
@@ -22,12 +22,21 @@ def query(novel_id: str) -> BaseSource:
     return sources.get_class_for(novel_id)()
 
 
+def prefetch_book(novel: BaseSource) -> Iterator[str]:
+    """
+    Really quickly download chapters into memory.
+    Call `download` or `download_progress` afterward
+    to convert it.
+    """
+    yield from load_all_chapters(novel)
+
+
 def download_progress(
     novel: str | BaseSource,
     path: Path | str = ".",
     start: int | None = None,
     end: int | None = None,
-) -> Iterable[str]:
+) -> Iterator[str]:
     """
     Download a novel given an ID or source.
 
