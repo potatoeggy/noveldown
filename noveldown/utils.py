@@ -1,7 +1,7 @@
 import imghdr
 import io
 from pathlib import Path
-from typing import Iterable, cast
+from typing import Iterator, cast
 
 import requests
 from ebooklib import epub
@@ -38,7 +38,7 @@ padding:0px;
 """
 
 
-def load_all_chapters(source: BaseSource) -> Iterable[str]:
+def load_all_chapters(source: BaseSource) -> Iterator[str]:
     """
     Calls the property for each chapter to collect them all
     in memory asynchronously to be extra fast.
@@ -47,7 +47,7 @@ def load_all_chapters(source: BaseSource) -> Iterable[str]:
         yield chap.title
 
 
-def create_epub(source: BaseSource, path: Path | str) -> Iterable[str]:
+def create_epub(source: BaseSource, path: Path | str) -> Iterator[str]:
     # TODO: split this into multiple functions (iohandler?) and add threads
     path = Path(path)
 
