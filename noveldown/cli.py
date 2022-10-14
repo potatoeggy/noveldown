@@ -18,7 +18,9 @@ def version_callback(val: bool | None) -> None:
 
 def supported_ids_callback(val: bool | None) -> None:
     if val:
-        typer.secho("Story title: Story ID", fg=typer.colors.BRIGHT_BLUE)
+        typer.secho(
+            "Story title: Story ID (case-insensitive)", fg=typer.colors.BRIGHT_BLUE
+        )
         for source in sources.get_all_classes():
             typer.echo(
                 f"{source.title}: {source.id} (aliases: {', '.join(source.aliases) or 'none'})"
@@ -43,6 +45,7 @@ def get(
     supported_ids: Optional[bool] = typer.Option(  # pylint: disable=unused-argument
         None,
         "--supported-ids",
+        "-s",
         is_eager=True,
         callback=supported_ids_callback,
         help="Output a list of IDs supported by noveldown",
