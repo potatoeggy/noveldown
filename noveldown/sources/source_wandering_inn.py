@@ -18,7 +18,7 @@ TOC_URL = "https://wanderinginn.com/table-of-contents/"
 
 class SourceWanderingInn(BaseSource):
     id = "WanderingInn"
-    aliases = ["TheWanderingInn"]
+    aliases = ["TheWanderingInn", "TWI"]
     title = "The Wandering Inn"
     authors = ["pirateaba"]
     url = "https://wanderinginn.com"
