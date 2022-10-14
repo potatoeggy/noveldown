@@ -32,7 +32,7 @@ class Chapter:
         self.content_raw = res.text
 
         if not res.text.strip():
-            self.content_raw = None
+            self.content_raw = requests.get(self.url).text
         return self.title
 
 
