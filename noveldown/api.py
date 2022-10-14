@@ -3,7 +3,7 @@ from typing import Iterable
 
 from . import sources
 from .sources.base_source import BaseSource
-from .utils import create_epub
+from .utils import create_epub, load_all_chapters
 
 
 def get_available_ids() -> list[str]:
@@ -20,6 +20,15 @@ def query(novel_id: str) -> BaseSource:
     :raises `ValueError` if no sources found.
     """
     return sources.get_class_for(novel_id)()
+
+
+def prefetch_book(novel: BaseSource) -> None:
+    """
+    Really quickly download chapters into memory.
+    Call `download` or `download_progress` afterward
+    to convert it.
+    """
+    yield from load_all_chapters(novel)
 
 
 def download_progress(

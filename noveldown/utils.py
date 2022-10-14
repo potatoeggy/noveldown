@@ -38,6 +38,15 @@ padding:0px;
 """
 
 
+def load_all_chapters(source: BaseSource) -> Iterable[str]:
+    """
+    Calls the property for each chapter to collect them all
+    in memory asynchronously to be extra fast.
+    """
+    for chap in source.chapters_flattened:
+        yield chap.title
+
+
 def create_epub(source: BaseSource, path: Path | str) -> Iterable[str]:
     # TODO: split this into multiple functions (iohandler?) and add threads
     path = Path(path)
