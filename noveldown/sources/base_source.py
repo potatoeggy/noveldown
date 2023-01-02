@@ -32,7 +32,7 @@ class Chapter:
         self.content_raw = res.text
 
         if not res.text.strip():
-            self.content_raw = requests.get(self.url).text
+            self.content_raw = requests.get(self.url, timeout=5).text
         return self.title
 
 
@@ -138,10 +138,10 @@ class BaseSource:
             if content_raw.strip():
                 # if it is an empty page we go again
                 return BeautifulSoup(content_raw, "lxml")
-        return BeautifulSoup(requests.get(url).text, "lxml")
+        return BeautifulSoup(requests.get(url, timeout=5).text, "lxml")
 
     def get_text_from_url(self, url: str) -> str:
-        return requests.get(url).text
+        return requests.get(url, timeout=5).text
 
     def __repr__(self) -> str:
         return (
