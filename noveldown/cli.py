@@ -32,8 +32,8 @@ def supported_ids_callback(val: bool | None) -> None:
 def get(
     novel_id: str,
     path: Path = typer.Argument(Path.cwd(), help="The path to download to"),
-    start: int | None = None,
-    end: int | None = None,
+    start: Optional[int] = None,
+    end: Optional[int] = None,
     version: Optional[bool] = typer.Option(  # pylint: disable=unused-argument
         None,
         "--version",
