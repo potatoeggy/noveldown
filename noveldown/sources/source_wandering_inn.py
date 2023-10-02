@@ -34,7 +34,7 @@ class SourceWanderingInn(BaseSource):
 
     def fetch_chapter_list(self) -> list[Chapter]:
         soup = self.get_soup(TOC_URL)
-        toc_html = soup.select("div.entry-content a")
+        toc_html = soup.select("div.chapter-entry a")
 
         return [Chapter(self, el.text, el["href"]) for el in toc_html]
 

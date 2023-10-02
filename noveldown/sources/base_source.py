@@ -92,7 +92,6 @@ class BaseSource:
     def chapters_flattened(self) -> list[Chapter]:
         if self.chapters:
             if isinstance(self.chapters[0], tuple):
-
                 flat_list: list[Chapter] = []
                 for section in cast(SectionedChapterList, self.chapters):
                     _, chapters = section
