@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import textwrap
 from functools import cached_property
 from typing import cast
@@ -29,6 +30,13 @@ class Chapter:
         """
         # i love it when i spaghetti things for the sake of perf
         res = await client.get(self.url)
+
+        # exponential backoff
+        backoff = 0.1
+        while res.status_code == 429:
+            await asyncio.sleep(backoff)
+            res = await client.get(self.url)
+            backoff *= 2
         self.content_raw = res.text
 
         if not res.text.strip():

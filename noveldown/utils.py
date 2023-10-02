@@ -39,7 +39,7 @@ padding:0px;
 .small { font-size: smaller; }
 """
 
-MAX_DEFAULT_THREADS = 16
+MAX_DEFAULT_THREADS = 8
 
 
 async def magic(
