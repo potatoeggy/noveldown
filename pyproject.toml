@@ -14,12 +14,12 @@ noveldown = "noveldown.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-requests = "^2.27.1"
-beautifulsoup4 = "^4.10.0"
-lxml = "^4.8.0"
+requests = "^2.31.0"
+beautifulsoup4 = "^4.12.3"
+lxml = "^5.2.1"
 EbookLib = "^0.18.0"
 typer = "^0.7.0"
-httpx = "^0.23.0"
+httpx = "^0.27.0"
 
 [tool.poetry.dev-dependencies]
 types-requests = "^2.27.11"
