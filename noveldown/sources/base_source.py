@@ -140,10 +140,7 @@ class BaseSource:
             if content_raw.strip():
                 # if it is an empty page we go again
                 return BeautifulSoup(content_raw, "lxml")
-        return BeautifulSoup(self.get_text_from_url(url), "lxml")
-
-    def get_text_from_url(self, url: str) -> str:
-        return requests_get(url).text
+        return BeautifulSoup(requests_get(url), "lxml")
 
     def __repr__(self) -> str:
         return (
