@@ -108,7 +108,10 @@ class BaseSource:
 
                 return flat_list
 
-        return []
+        # self.chapters is guaranteed to be a list, so
+        # if the first check evaluates false it must be an empty list
+        # which is the correct return type
+        return self.chapters  # type: ignore
 
     def set_chapter_range(self, *, start: int | None = None, end: int | None = None) -> None:
         start = start or 0
