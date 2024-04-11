@@ -39,12 +39,10 @@ padding:0px;
 .small { font-size: smaller; }
 """
 
-MAX_DEFAULT_THREADS = 8
+MAX_DEFAULT_THREADS = 4
 
 
-async def magic(
-    source: BaseSource, threads: int = MAX_DEFAULT_THREADS
-) -> AsyncIterator[str]:
+async def magic(source: BaseSource, threads: int = MAX_DEFAULT_THREADS) -> AsyncIterator[str]:
     limits = httpx.Limits(
         max_connections=threads, max_keepalive_connections=threads, keepalive_expiry=5
     )
@@ -55,9 +53,7 @@ async def magic(
             yield await result
 
 
-def load_all_chapters(
-    source: BaseSource, threads: int = MAX_DEFAULT_THREADS
-) -> Iterator[str]:
+def load_all_chapters(source: BaseSource, threads: int = MAX_DEFAULT_THREADS) -> Iterator[str]:
     """
     Calls the property for each chapter to collect them all
     in memory asynchronously to be extra fast.
