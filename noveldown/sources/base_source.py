@@ -29,19 +29,27 @@ class Chapter:
         Fetch the raw page HTML and save it, returning the title.
         """
         # i love it when i spaghetti things for the sake of perf
-        res = await client.get(self.url)
 
         # exponential backoff
-        backoff = 0.1
-        while res.status_code == 429:
+        backoff = 0.5
+        while (res := await self.get_raw_content_or_null(client)) is None or res.status_code == 429:
             await asyncio.sleep(backoff)
-            res = await client.get(self.url)
             backoff *= 2
+
+            if backoff > 60:
+                res = requests_get(self.url)
+                break
         self.content_raw = res.text
 
         if not res.text.strip():
             self.content_raw = requests_get(self.url).text
         return self.title
+
+    async def get_raw_content_or_null(self, client: httpx.AsyncClient) -> httpx.Response | None:
+        try:
+            return await client.get(self.url)
+        except Exception:
+            return None
 
 
 SectionedChapterList = list[tuple[str, list[Chapter]]]
