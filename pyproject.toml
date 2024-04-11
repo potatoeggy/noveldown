@@ -21,8 +21,9 @@ EbookLib = "^0.18.0"
 typer = "^0.7.0"
 httpx = "^0.27.0"
 
-[tool.poetry.dev-dependencies]
-types-requests = "^2.27.11"
+[tool.poetry.group.dev.dependencies]
+types-requests = "^2.31.0.20240406"
+types-beautifulsoup4 = "^4.12.0.20240229"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
