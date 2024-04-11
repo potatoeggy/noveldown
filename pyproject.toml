@@ -37,5 +37,5 @@ mccabe.max-complexity = 18
 select = ["B", "C", "E", "F", "W", "B9"]
 ignore = ["E203", "E266", "E501", "B905"]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "**/__init__.py" = ["F401"]

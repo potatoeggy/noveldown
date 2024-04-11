@@ -40,7 +40,7 @@ class Chapter:
         self.content_raw = res.text
 
         if not res.text.strip():
-            self.content_raw = requests.get(self.url, timeout=5).text
+            self.content_raw = requests_get(self.url).text
         return self.title
 
 
@@ -108,14 +108,9 @@ class BaseSource:
 
                 return flat_list
 
-        # self.chapters is guaranteed to be a list, so
-        # if the first check evaluates false it must be an empty list
-        # which is the correct return type
-        return self.chapters  # type: ignore
+        return []
 
-    def set_chapter_range(
-        self, *, start: int | None = None, end: int | None = None
-    ) -> None:
+    def set_chapter_range(self, *, start: int | None = None, end: int | None = None) -> None:
         start = start or 0
         end = end or len(self.chapters_flattened)
         if self._chapter_urls and isinstance(self._chapter_urls[0], Chapter):
@@ -145,10 +140,10 @@ class BaseSource:
             if content_raw.strip():
                 # if it is an empty page we go again
                 return BeautifulSoup(content_raw, "lxml")
-        return BeautifulSoup(requests.get(url, timeout=5).text, "lxml")
+        return BeautifulSoup(self.get_text_from_url(url), "lxml")
 
     def get_text_from_url(self, url: str) -> str:
-        return requests.get(url, timeout=5).text
+        return requests_get(url).text
 
     def __repr__(self) -> str:
         return (
@@ -189,3 +184,13 @@ class BaseSource:
         :param `content_raw`: parse an already-downloaded HTML file.
         """
         raise NotImplementedError
+
+
+def requests_get(url: str) -> requests.Response:
+    return requests.get(
+        url,
+        timeout=5,
+        headers={
+            "User-Agent": "",
+        },
+    )

@@ -5,10 +5,9 @@ from pathlib import Path
 from typing import AsyncIterator, Iterator, cast
 
 import httpx
-import requests
 from ebooklib import epub
 
-from .sources.base_source import BaseSource, Chapter, SectionedChapterList
+from .sources.base_source import BaseSource, Chapter, SectionedChapterList, requests_get
 
 STYLE_CSS = """
 body { background-color: #ffffff;
@@ -46,7 +45,7 @@ async def magic(source: BaseSource, threads: int = MAX_DEFAULT_THREADS) -> Async
     limits = httpx.Limits(
         max_connections=threads, max_keepalive_connections=threads, keepalive_expiry=5
     )
-    async with httpx.AsyncClient(limits=limits) as client:
+    async with httpx.AsyncClient(limits=limits, headers={"User-Agent": ""}) as client:
         functions = [chap.get_raw_content(client) for chap in source.chapters_flattened]
 
         for result in asyncio.as_completed(functions):
@@ -131,7 +130,7 @@ def create_epub(source: BaseSource, path: Path | str) -> Iterator[str]:
 
     book.spine = [*chapter_htmls]
     if source.cover_url:
-        image = requests.get(source.cover_url).content
+        image = requests_get(source.cover_url).content
         ext = imghdr.what(io.BytesIO(image))
         book.set_cover(f"cover.{ext}", image)
         book.spine.insert(0, "cover")
