@@ -91,6 +91,17 @@ class BaseSource:
     # so that all chapter_urls are list[tuple]s
     _chapter_urls: list[Chapter] | SectionedChapterList | None = None
 
+    def asdict(self) -> dict[str, str | list[str] | None]:
+        return {
+            "id": self.id,
+            "title": self.title,
+            "authors": self.authors,
+            "url": self.url,
+            "genres": self.genres,
+            "description": self.description,
+            "cover_url": self.cover_url,
+        }
+
     def __init__(self) -> None:
         self.update_metadata()
 
