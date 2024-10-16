@@ -17,6 +17,7 @@ To request a new story, please file a [new issue](https://github.com/potatoeggy/
 - [The Wandering Inn](https://wanderinginn.com) - pirate aba
 - [A Practical Guide to Evil](https://practicalguidetoevil.wordpress.com) - ErraticErrata
 - [Pale](https://palewebserial.wordpress.com/) - Wildbow
+- [Claw](https://https://clawwebserial.blog/) - Wildbow
 
 ## Installation
 
@@ -62,6 +63,7 @@ Append the `--start` and `--end` options to limit the number of chapters downloa
 Run `noveldown --help` for more info.
 
 ## Library Usage
+
 ```python
 import noveldown
 
