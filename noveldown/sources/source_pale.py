@@ -48,6 +48,8 @@ class SourcePale(BaseSource):
 
         is_chapter_begun = False
         for tag in body.children:
+            if tag.name is None:
+                continue
             if not is_chapter_begun:
                 if tag.name == "hr":
                     is_chapter_begun = True

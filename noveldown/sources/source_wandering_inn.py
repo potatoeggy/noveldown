@@ -44,7 +44,9 @@ class SourceWanderingInn(BaseSource):
         cleaned = [f"<h2>{chapter.title}</h2>"]
 
         for tag in body.children:
-            if tag.name == "hr" or tag.name == "div":
+            if tag.name is None:
+                continue
+            elif tag.name == "hr" or tag.name == "div":
                 break
             cleaned.append(str(tag))
 

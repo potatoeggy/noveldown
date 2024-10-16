@@ -49,7 +49,9 @@ class SourcePracticalGuideToEvil(BaseSource):
         body = soup.select_one("div.entry-content")
         cleaned = [f"<h2>{chapter.title}</h2>"]
         for tag in body.children:
-            if tag.name == "div":
+            if tag.name is None:
+                continue
+            elif tag.name == "div":
                 break
             cleaned.append(str(tag))
 
