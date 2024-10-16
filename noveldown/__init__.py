@@ -5,5 +5,5 @@ from .api import (  # isort: skip
     query,
 )
 
-__version__ = (1, 2, 2)
+__version__ = (1, 3, 0)
 __version_str__ = ".".join(map(str, __version__))
