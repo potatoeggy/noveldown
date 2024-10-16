@@ -1,11 +1,11 @@
 import asyncio
-import imghdr
 import io
 from pathlib import Path
 from typing import AsyncIterator, Iterator, cast
 
 import httpx
 from ebooklib import epub
+import filetype
 
 from .sources.base_source import BaseSource, Chapter, SectionedChapterList, requests_get
 
@@ -131,7 +131,7 @@ def create_epub(source: BaseSource, path: Path | str) -> Iterator[str]:
     book.spine = [*chapter_htmls]
     if source.cover_url:
         image = requests_get(source.cover_url).content
-        ext = imghdr.what(io.BytesIO(image))
+        ext = filetype.guess_extension(io.BytesIO(image)) or source.cover_url.split(".")[-1]
         book.set_cover(f"cover.{ext}", image)
         book.spine.insert(0, "cover")
 
