@@ -22,7 +22,7 @@ class SourcePale(BaseSource):
     toc_url = TOC_URL
 
     def fetch_chapter_list(self) -> SectionedChapterList:
-        soup = self.get_soup(TOC_URL)
+        soup = self.get_soup(self.toc_url)
         toc_html = soup.select_one("div.entry-content")
 
         arc_titles = toc_html.select("div.entry-content > p:not([style]) > strong")
