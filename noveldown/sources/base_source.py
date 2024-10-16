@@ -129,7 +129,7 @@ class BaseSource:
             return
 
         current_num = 0
-        new_temp = []
+        new_temp: list[tuple[str, Chapter]] = []
         for section in cast(SectionedChapterList, self._chapter_urls) or []:
             sec_title, chapters = section
             for chap in chapters:

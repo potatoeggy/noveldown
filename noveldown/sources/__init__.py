@@ -14,7 +14,7 @@ __class_list: list[type[BaseSource]] = []
 
 
 def _get_all_source_modules() -> list[str]:
-    out = []
+    out: list[str] = []
     for _, val in globals().items():
         if isinstance(val, types.ModuleType) and val.__name__.startswith(
             "noveldown.sources.source_"
