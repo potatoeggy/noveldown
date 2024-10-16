@@ -35,7 +35,7 @@ class SourcePale(BaseSource):
         structure = [
             (
                 title.text,
-                [Chapter(self, a.text, a["href"]) for a in entries.select("a")],
+                [Chapter(self, a.text.strip(), a["href"]) for a in entries.select("a")],
             )
             for title, entries in zip(arc_titles, arc_entries, strict=True)
         ]
