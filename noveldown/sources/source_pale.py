@@ -46,19 +46,34 @@ class SourcePale(BaseSource):
         body = soup.select_one("div.entry-content")
         cleaned = [f"<h2>{chapter.title}</h2>"]
 
-        is_chapter_begun = False
+        """
+        0: nothing found
+        1: first hr or image found
+        2: second hr found, we can start copying
+        """
+        stage = 0
+
         for tag in body.children:
             if tag.name is None:
                 continue
-            if not is_chapter_begun:
+
+            if stage != 2:
+                # ignore "previous epilogue/next epilogue" - wait until we see
+                # the first image + one hr tag (main story) OR two hr tags (for epilogue)
+                # include non-link headers (these are sometimes h1s or p with strongs)
                 if tag.name == "hr":
-                    is_chapter_begun = True
+                    stage += 1
+                elif tag.name == "p" and tag.find("img"):
+                    stage += 1
+                elif (
+                    tag.name == "h1" or tag.name == "p" and tag.find("strong") and not tag.find("a")
+                ):
+                    cleaned.append(f"<p><strong>{tag.text}</strong></p>")
                 continue
             elif tag.name == "hr":
                 # end of chapter
                 break
             cleaned.append(str(tag))
-
         return "\n".join(cleaned)
 
 
